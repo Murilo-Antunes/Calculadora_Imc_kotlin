@@ -40,7 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.calculadoraimc.ui.theme.CalculadoraIMCTheme
 
+
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -60,14 +62,22 @@ class MainActivity : ComponentActivity() {
 fun IMCScreen(modifier: Modifier = Modifier) {
     val alturaFieldValue = remember { mutableStateOf("") }
     val pesoFieldValue = remember { mutableStateOf("") }
+    val mensagem = remember { mutableStateOf("") }
+
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize()
     ) {
-        Box(modifier = Modifier.fillMaxSize() ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                // -- header --
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                // Header
                 Column(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .height(160.dp)
                         .background(
                             color = colorResource(id = R.color.cor_app)
@@ -75,24 +85,25 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
-                        painter = painterResource(
-                            R.drawable.bmi
-                        ),
+                        painter = painterResource(R.drawable.bmi),
                         contentDescription = "IMC",
-                        modifier = Modifier.size(80.dp)
+                        modifier = Modifier
+                            .size(80.dp)
                             .padding(vertical = 16.dp)
                     )
+
                     Text(
                         text = "Calculadora IMC",
                         fontSize = 24.sp,
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
-
                 }
-                // -- formulário --
+
+                // Formulário
                 Column(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(horizontal = 32.dp)
                 ) {
                     Card(
@@ -100,15 +111,19 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                             .height(300.dp)
                             .fillMaxWidth()
                             .offset(y = (-32).dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F6F6)),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFFF9F6F6)
+                        ),
                         elevation = CardDefaults.cardElevation(4.dp)
                     ) {
                         Column(
-                                modifier = Modifier.padding(16.dp)
-                            ) {
+                            modifier = Modifier.padding(16.dp)
+                        ) {
                             Text(
                                 text = "Seus Dados",
-                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                modifier = Modifier.align(
+                                    Alignment.CenterHorizontally
+                                ),
                                 color = colorResource(R.color.cor_app),
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
@@ -118,12 +133,20 @@ fun IMCScreen(modifier: Modifier = Modifier) {
 
                             OutlinedTextField(
                                 value = alturaFieldValue.value,
-                                onValueChange = {novoValor -> alturaFieldValue.value = novoValor},
-                                modifier = Modifier.width(300.dp).align(Alignment.CenterHorizontally),
-                                label = {Text("Altura")},
+                                onValueChange = {
+                                    alturaFieldValue.value = it
+                                },
+                                modifier = Modifier
+                                    .width(300.dp)
+                                    .align(Alignment.CenterHorizontally),
+                                label = {
+                                    Text("Altura (m)")
+                                },
                                 colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = colorResource(R.color.cor_app),
-                                    unfocusedBorderColor = colorResource(R.color.cor_app)
+                                    focusedBorderColor =
+                                        colorResource(R.color.cor_app),
+                                    unfocusedBorderColor =
+                                        colorResource(R.color.cor_app)
                                 ),
                                 singleLine = true,
                                 shape = RoundedCornerShape(15.dp)
@@ -133,12 +156,20 @@ fun IMCScreen(modifier: Modifier = Modifier) {
 
                             OutlinedTextField(
                                 value = pesoFieldValue.value,
-                                onValueChange = {novoValor -> pesoFieldValue.value = novoValor},
-                                modifier = Modifier.width(300.dp).align(Alignment.CenterHorizontally),
-                                label = {Text("Peso")},
+                                onValueChange = {
+                                    pesoFieldValue.value = it
+                                },
+                                modifier = Modifier
+                                    .width(300.dp)
+                                    .align(Alignment.CenterHorizontally),
+                                label = {
+                                    Text("Peso (kg)")
+                                },
                                 colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = colorResource(R.color.cor_app),
-                                    unfocusedBorderColor = colorResource(R.color.cor_app)
+                                    focusedBorderColor =
+                                        colorResource(R.color.cor_app),
+                                    unfocusedBorderColor =
+                                        colorResource(R.color.cor_app)
                                 ),
                                 singleLine = true,
                                 shape = RoundedCornerShape(15.dp)
@@ -147,43 +178,47 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                             Spacer(modifier = Modifier.height(15.dp))
 
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    mensagem.value = Result(
+                                        pesoFieldValue.value,
+                                        alturaFieldValue.value
+                                    )
+                                },
                                 modifier = Modifier.width(300.dp),
-                                colors = ButtonDefaults.buttonColors(colorResource(R.color.cor_app))
-
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor =
+                                        colorResource(R.color.cor_app)
+                                )
                             ) {
                                 Text(text = "Calcular")
                             }
-
                         }
-
                     }
-
                 }
-
             }
         }
-        // -- card resultado --
 
+        // Resultado
+        Row {
+            Text(
+                text = mensagem.value,
+                fontSize = 20.sp
+            )
+        }
     }
 }
 
-@Composable
-fun Result(pesoStr: String, alturaStr : String){
-    val peso = pesoStr.toFloatOrNull()
-    val altura = alturaStr.toFloatOrNull()
-    val mensagem : String
-    if (peso != null && altura != null && altura > 0){
-        mensagem = calcularImc(peso, altura)
-    }else{
-        mensagem = ""
-    }
+fun Result(pesoStr: String, alturaStr: String): String {
+    val peso = pesoStr.replace(",", ".").toFloatOrNull()
+    val altura = alturaStr.replace(",", ".").toFloatOrNull()
 
-
-    Row() {
-        Text(mensagem, fontSize = 20.sp)
+    return if (peso != null && altura != null && peso > 0 && altura > 0) {
+        calcularImc(peso, altura)
+    } else {
+        "Informe peso e altura válidos"
     }
 }
+
 
 fun calcularImc(peso: Float, altura: Float): String{
     val imc = peso / (altura*altura)
